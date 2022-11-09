@@ -6,9 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "USERS")
@@ -36,12 +34,6 @@ public class User {
     private List<Recipe> recipes = new ArrayList<>();
 
     public User() {}
-
-    public User(String password, String email) {
-        this.email = email;
-        this.password = password;
-        this.role = "ROLE_USER";
-    }
 
     public void addRecipe(Recipe recipe) {
         this.recipes.add(recipe);

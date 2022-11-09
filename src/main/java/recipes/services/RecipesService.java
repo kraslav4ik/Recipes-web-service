@@ -11,7 +11,6 @@ import recipes.repositories.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class RecipesService {
@@ -44,15 +43,12 @@ public class RecipesService {
         String email = userDetails.getUsername();
         User currentUser = this.userRepository.findByEmail(email);
         List<Recipe> usersRecipes = currentUser.getRecipes();
-//        System.out.println(this.userRepository.findByEmail(email).getRecipes());
-//        System.out.println(this.recipesRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage)));
 
         if (!usersRecipes
                 .contains(this.recipesRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage)))
         ) {
            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have an access");
         }
-        // TODO REMOVE RECIPE FROM USER'S LIST
         currentUser.deleteRecipe(this.findById(id));
         this.recipesRepository.deleteById(id);
         this.userRepository.save(currentUser);
@@ -63,9 +59,6 @@ public class RecipesService {
         String email = userDetails.getUsername();
         User currentUser = this.userRepository.findByEmail(email);
         List<Recipe> usersRecipes = currentUser.getRecipes();
-//        System.out.println("###################");
-//        System.out.println(this.userRepository.findByEmail(email).getRecipes());
-//        System.out.println(this.recipesRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage)));
 
         if (!usersRecipes
                 .contains(this.recipesRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage)))
