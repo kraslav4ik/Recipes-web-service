@@ -33,7 +33,7 @@ public class RecipesService {
     }
 
     public void save(Recipe recipe, UserDetails userDetails) {
-        User user = this.userRepository.findByEmail(userDetails.getUsername());
+        User user = this.userRepository.findByEmail(userDetails.getUsername()).get(0);
         Recipe recipeToSave = new Recipe(recipe.getName(), recipe.getDescription(),
                 LocalDateTime.now(), recipe.getCategory(), recipe.getIngredients(), recipe.getDirections(), user);
         this.recipesRepository.save(recipeToSave);
@@ -42,7 +42,7 @@ public class RecipesService {
 
     public void deleteById(long id, UserDetails userDetails) {
         String email = userDetails.getUsername();
-        User currentUser = this.userRepository.findByEmail(email);
+        User currentUser = this.userRepository.findByEmail(email).get(0);
         Recipe recipe = this.findById(id);
 
         if (recipe.getUser() != currentUser) {
@@ -55,7 +55,7 @@ public class RecipesService {
 
     public void updateRecipe(long id, Recipe newRecipe, UserDetails userDetails) {
         String email = userDetails.getUsername();
-        User currentUser = this.userRepository.findByEmail(email);
+        User currentUser = this.userRepository.findByEmail(email).get(0);
         Recipe oldRecipe = this.findById(id);
         if (oldRecipe.getUser() != currentUser) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have an access");

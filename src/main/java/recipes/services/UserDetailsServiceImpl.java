@@ -10,6 +10,8 @@ import org.springframework.web.server.ResponseStatusException;
 import recipes.entities.User;
 import recipes.repositories.UserRepository;
 
+import java.util.List;
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -22,12 +24,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = this.userRepository.findByEmail(email);
+        List<User> userList = this.userRepository.findByEmail(email);
+        System.out.println(userList);
 
-        if (user == null) {
+        if (userList.isEmpty()) {
+            System.out.println("I DIDNT FIND ANY USERS, THROW AN EXCEPTION TO DAOPROVIDER");
             throw new UsernameNotFoundException(email + " not found");
         }
-        return new UserDetailsImpl(user);
+        return new UserDetailsImpl(userList.get(0));
     }
 
     public void save(User user) {
@@ -35,6 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             this.userRepository.save(user);
             return;
         }
+        System.out.println("I THINK THAT USER ALREADY EXISTS");
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User with this email already exists");
 
     }
