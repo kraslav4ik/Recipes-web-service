@@ -8,11 +8,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import recipes.services.Recipe;
+import recipes.entities.Recipe;
 import recipes.services.RecipesService;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,8 +37,7 @@ public class RecipesController {
     @PostMapping("/recipe/new")
     public Map<String, Long> addRecipe(@RequestBody @Valid Recipe recipe, @AuthenticationPrincipal UserDetails userDetails) {
         long recipeId = this.service.getLastId() + 1;
-        this.service.save(new Recipe(recipe.getName(), recipe.getDescription(),
-                LocalDateTime.now(), recipe.getCategory(), recipe.getIngredients(), recipe.getDirections()), userDetails);
+        this.service.save(recipe, userDetails);
 
         Map<String, Long> response = new HashMap<>();
         response.put("id", recipeId);

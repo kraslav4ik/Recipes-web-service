@@ -1,4 +1,6 @@
-package recipes.services;
+package recipes.entities;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -40,15 +42,21 @@ public class Recipe {
     @CollectionTable(name = "DIRECTIONS", joinColumns = @JoinColumn(name = "RECIPE_ID"))
     private List<String> directions = new ArrayList<>();
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "USER_ID")
+    private User user;
+
     public Recipe(String name, String description,
                   LocalDateTime date, String category,
-                  List<String> ingredients, List<String> directions) {
+                  List<String> ingredients, List<String> directions, User user) {
         this.name = name;
         this.description = description;
         this.date = date;
         this.category = category;
         this.ingredients = ingredients;
         this.directions = directions;
+        this.user = user;
     }
 
     public Recipe() {}
@@ -104,5 +112,13 @@ public class Recipe {
     @Override
     public String toString() {
         return "id:" + id + "\tname:" + name;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

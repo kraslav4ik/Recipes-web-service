@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import recipes.entities.Recipe;
+import recipes.entities.User;
 import recipes.repositories.RecipesRepository;
 import recipes.repositories.UserRepository;
 
@@ -31,41 +33,33 @@ public class RecipesService {
     }
 
     public void save(Recipe recipe, UserDetails userDetails) {
-
-        this.recipesRepository.save(recipe);
         User user = this.userRepository.findByEmail(userDetails.getUsername());
-        user.addRecipe(recipe);
+        Recipe recipeToSave = new Recipe(recipe.getName(), recipe.getDescription(),
+                LocalDateTime.now(), recipe.getCategory(), recipe.getIngredients(), recipe.getDirections(), user);
+        this.recipesRepository.save(recipeToSave);
         this.userRepository.save(user);
     }
 
     public void deleteById(long id, UserDetails userDetails) {
-        String errorMessage = "Recipe with specified id doesn't exist";
         String email = userDetails.getUsername();
         User currentUser = this.userRepository.findByEmail(email);
-        List<Recipe> usersRecipes = currentUser.getRecipes();
+        Recipe recipe = this.findById(id);
 
-        if (!usersRecipes
-                .contains(this.recipesRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage)))
-        ) {
-           throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have an access");
+        if (recipe.getUser() != currentUser) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have an access");
+
         }
-        currentUser.deleteRecipe(this.findById(id));
         this.recipesRepository.deleteById(id);
         this.userRepository.save(currentUser);
     }
 
     public void updateRecipe(long id, Recipe newRecipe, UserDetails userDetails) {
-        String errorMessage = "Recipe with specified id doesn't exist";
         String email = userDetails.getUsername();
         User currentUser = this.userRepository.findByEmail(email);
-        List<Recipe> usersRecipes = currentUser.getRecipes();
-
-        if (!usersRecipes
-                .contains(this.recipesRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, errorMessage)))
-        ) {
+        Recipe oldRecipe = this.findById(id);
+        if (oldRecipe.getUser() != currentUser) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You don't have an access");
         }
-        Recipe oldRecipe = usersRecipes.get(usersRecipes.indexOf(this.findById(id)));
 
         oldRecipe.setName(newRecipe.getName());
         oldRecipe.setDescription(newRecipe.getDescription());
@@ -74,8 +68,8 @@ public class RecipesService {
         oldRecipe.setDirections(newRecipe.getDirections());
         oldRecipe.setIngredients(newRecipe.getIngredients());
         this.userRepository.save(currentUser);
-        // TODO UPDATE RECIPE FROM USER'S LIST
         this.recipesRepository.save(oldRecipe);
+
     }
 
     public List<Recipe> findByCategory(String category) {

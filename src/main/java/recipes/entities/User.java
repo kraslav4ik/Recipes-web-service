@@ -1,4 +1,4 @@
-package recipes.services;
+package recipes.entities;
 
 
 import javax.persistence.*;
@@ -29,19 +29,11 @@ public class User {
     @Column(name = "ROLE")
     private String role;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "USER_ID")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Recipe> recipes = new ArrayList<>();
 
+
     public User() {}
-
-    public void addRecipe(Recipe recipe) {
-        this.recipes.add(recipe);
-    }
-
-    public void deleteRecipe(Recipe recipe) {
-        this.recipes.remove(recipe);
-    }
 
     public String getRole() {
         return role;
