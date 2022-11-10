@@ -18,7 +18,7 @@ Recipes-Web-Service/>
 ```
 To launch the app:
 ```bash
-Recipes-Web-Service/> ./granlew bootRun
+Recipes-Web-Service/> ./gradlew bootRun
 ```
 
 To shut down the server send the empty POST request to localhost: PORT/actuator/shutdown.
