@@ -12,9 +12,9 @@ Add your database info (url, username, password) using next bash commands.
 
 ```bash
 Recipes-Web-Service/> 
-  echo spring.datasource.url=jdbc:mysql://YOUR_DATABASE_URL >> ./src/main/resourses/application.properties
-  echo spring.datasource.username=YOUR_USERNAME >> ./src/main/resourses/application.properties
-  echo spring.datasource.password=YOUR_PASSWORD >> ./src/main/resourses/application.properties
+  echo spring.datasource.url=jdbc:mysql://YOUR_DATABASE_URL >> ./src/main/resources/application.properties
+  echo spring.datasource.username=YOUR_USERNAME >> ./src/main/resources/application.properties
+  echo spring.datasource.password=YOUR_PASSWORD >> ./src/main/resources/application.properties
 ```
 To launch the app:
 ```bash
